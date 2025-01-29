@@ -12,21 +12,22 @@ guidata(S.ship,S);
 function [] = fig_kpfcn(H,E)
     S = guidata(H);
     stepsize=0.1;
+    margin = 0.1;
     switch E.Key
         case 'd'
-            if(get(S.ship,'XData')+stepsize < (10))
+            if(get(S.ship,'XData')+stepsize < (10-margin))
                 set(S.ship,'XData',get(S.ship,'XData')+stepsize);
             end
         case 'a'
-            if(get(S.ship,'XData')-stepsize > (0))
+            if(get(S.ship,'XData')-stepsize > (0+margin))
                 set(S.ship,'XData',get(S.ship,'XData')-stepsize);
             end
         case 'w'
-            if(get(S.ship,'YData')+stepsize < (10))
+            if(get(S.ship,'YData')+stepsize < (10-margin))
                 set(S.ship,'YData',get(S.ship,'YData')+stepsize);
             end
         case 's'
-            if(get(S.ship,'YData')-stepsize > (0))
+            if(get(S.ship,'YData')-stepsize > (0+margin))
                 set(S.ship,'YData',get(S.ship,'YData')-stepsize);
             end
     end
