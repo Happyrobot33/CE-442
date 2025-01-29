@@ -1,0 +1,40 @@
+xCenter = 10/2;
+yCenter = 10/2;
+radius = 1;
+
+S.ship = circle(xCenter, yCenter, radius);
+set(gcf(), 'KeyPressFcn', @fig_kpfcn); 
+guidata(S.ship,S); 
+
+function [] = fig_kpfcn(H,E)
+S = guidata(H);
+stepsize=0.1;
+switch E.Key
+    case 'rightarrow'
+        if(get(S.ship,'XData')+stepsize < (10))
+            set(S.ship,'XData',get(S.ship,'XData')+stepsize);
+        end
+    case 'leftarrow'
+        if(get(S.ship,'XData')+stepsize < (10))
+        set(S.ship,'XData',get(S.ship,'XData')-stepsize);
+        end
+    case 'uparrow'
+        if(get(S.ship,'XData')+stepsize < (10))
+        set(S.ship,'YData',get(S.ship,'YData')+stepsize);
+        end
+    case 'downarrow'
+        if(get(S.ship,'YData')+stepsize  (10))
+        set(S.ship,'YData',get(S.ship,'YData')-stepsize);
+        end
+end
+end
+
+
+function h = circle(xCenter,yCenter,radius)
+hold on
+xlim([0,10]);
+ylim([0,10]);
+h = plot(xCenter,yCenter, "squarer");
+h.MarkerSize = radius * 5;
+hold off
+end
