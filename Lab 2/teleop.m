@@ -13,19 +13,19 @@ function [] = fig_kpfcn(H,E)
     S = guidata(H);
     stepsize=0.1;
     switch E.Key
-        case 'rightarrow'
+        case 'd'
             if(get(S.ship,'XData')+stepsize < (10))
                 set(S.ship,'XData',get(S.ship,'XData')+stepsize);
             end
-        case 'leftarrow'
+        case 'a'
             if(get(S.ship,'XData')-stepsize > (0))
                 set(S.ship,'XData',get(S.ship,'XData')-stepsize);
             end
-        case 'uparrow'
+        case 'w'
             if(get(S.ship,'YData')+stepsize < (10))
                 set(S.ship,'YData',get(S.ship,'YData')+stepsize);
             end
-        case 'downarrow'
+        case 's'
             if(get(S.ship,'YData')-stepsize > (0))
                 set(S.ship,'YData',get(S.ship,'YData')-stepsize);
             end
