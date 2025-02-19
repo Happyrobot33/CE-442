@@ -1,0 +1,6 @@
+{
+    "board": "arduino:renesas_uno:unor4wifi",
+    "programmer": "cmsis-dap",
+    "port": "COM6",
+    "sketch": "Lab 4\\Part 2\\Part 2.ino"
+}
