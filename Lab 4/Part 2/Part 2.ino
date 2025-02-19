@@ -31,6 +31,7 @@ void loop()
     // ObstacleAvoidanceLoop();
 }
 
+//wait until the button on the robot is pressed to continue execution. This is blocking
 void WaitForButton()
 {
     while (digitalRead(START_BTN) == HIGH)
@@ -38,38 +39,45 @@ void WaitForButton()
     delay(2000);
 }
 
+// what was the last line sensor that we saw? Defaults to 0 which is in the middle.
 int lastSeenSensor = 0;
 void LineFollowerLoop()
 {
     //check if there is something infront of us
     int pingDist = sonar.ping_cm();
-
     while (pingDist < 20 && pingDist != 0)
     {
         // if there is something infront of us, stop and wait until there isnt
         Stop();
         pingDist = sonar.ping_cm();
+        //we wont exit this loop until the while condition is false
     }
 
-    // read the line sensors
+    // read the line sensors into the global array
     readLineSensors();
 // check if the line sensors went above threshold at all. if they did, rotate 180 degrees
 #define whiteThreshold 6
-
     // scan left to right to figure out what sensor it was
     for (int i = 0; i < 5; i++)
     {
         if (line_sensor[i] > whiteThreshold)
         {
             // apply a offset so we get negative to one side, positive to the other, and 0 in the middle
+            /*
+            Real sensor index
+             0  1  2  3  4  
+            -2 -1  0  1  2
+            value saved into the last seen sensor variable
+            */
             lastSeenSensor = i - 2;
+            //break to avoid extra computation we dont need to do
             break;
         }
     }
 
     Serial.println(lastSeenSensor);
 
-    // differentially drive forward with the sensor value
+    // differentially drive forward with the sensor value as the differential ratio
     DifferentialForward(50, (lastSeenSensor * 6));
 }
 
