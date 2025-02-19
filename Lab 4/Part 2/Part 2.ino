@@ -31,7 +31,7 @@ void loop()
     // ObstacleAvoidanceLoop();
 }
 
-//wait until the button on the robot is pressed to continue execution. This is blocking
+// wait until the button on the robot is pressed to continue execution. This is blocking
 void WaitForButton()
 {
     while (digitalRead(START_BTN) == HIGH)
@@ -43,14 +43,14 @@ void WaitForButton()
 int lastSeenSensor = 0;
 void LineFollowerLoop()
 {
-    //check if there is something infront of us
+    // check if there is something infront of us
     int pingDist = sonar.ping_cm();
     while (pingDist < 20 && pingDist != 0)
     {
         // if there is something infront of us, stop and wait until there isnt
         Stop();
         pingDist = sonar.ping_cm();
-        //we wont exit this loop until the while condition is false
+        // we wont exit this loop until the while condition is false
     }
 
     // read the line sensors into the global array
@@ -65,12 +65,12 @@ void LineFollowerLoop()
             // apply a offset so we get negative to one side, positive to the other, and 0 in the middle
             /*
             Real sensor index
-             0  1  2  3  4  
+             0  1  2  3  4
             -2 -1  0  1  2
             value saved into the last seen sensor variable
             */
             lastSeenSensor = i - 2;
-            //break to avoid extra computation we dont need to do
+            // break to avoid extra computation we dont need to do
             break;
         }
     }
@@ -78,7 +78,7 @@ void LineFollowerLoop()
     Serial.println(lastSeenSensor);
 
     // differentially drive forward with the sensor value as the differential ratio
-    DifferentialForward(50, (lastSeenSensor * 6));
+    DifferentialForward(40, (lastSeenSensor * 3));
 }
 
 void ObstacleAvoidanceLoop()
@@ -93,21 +93,39 @@ void ObstacleAvoidanceLoop()
 
         readLineSensors();
         Serial.println(line_sensor[0]);
-        // check if the line sensors went above threshold at all. if they did, rotate 180 degrees
-        bool line_detected = false;
+        // scan left to right to figure out what sensor it was
+        bool foundBlack = false;
         for (int i = 0; i < 5; i++)
         {
 #define blackThreshold 2
             if (line_sensor[i] < blackThreshold)
             {
-                line_detected = true;
+                // apply a offset so we get negative to one side, positive to the other, and 0 in the middle
+                /*
+                Real sensor index
+                 0  1  2  3  4
+                -2 -1  0  1  2
+                value saved into the last seen sensor variable
+                */
+                lastSeenSensor = i - 2;
+                foundBlack = true;
+                // break to avoid extra computation we dont need to do
+                break;
             }
         }
 
-        if (line_detected)
+        if (foundBlack)
         {
-            Move(-1, 50);
-            Turn(180, 50);
+            if (lastSeenSensor < 0)
+            {
+                Move(-1, 50);
+                Turn(90, 50);
+            }
+            else
+            {
+                Move(-1, 50);
+                Turn(-90, 50);
+            }
         }
     }
 
